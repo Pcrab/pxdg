@@ -27,19 +27,19 @@ const buildHome = (envName: XDGHomeName): string => {
     return process.env[envName] || DefaultHome[envName];
 };
 
-const DefaultDirs: Record<XDGDirsName, string> = {
+const DefaultDirs: Record<XDGDirsName, string[]> = {
     XDG_CONFIG_DIRS: isWin
-        ? `${process.env["APPDATA"] || ""}:${process.env["ProgramData"] || ""}`
-        : "/etc/xdg",
+        ? [process.env["APPDATA"] || "", process.env["ProgramData"] || ""]
+        : ["/etc/xdg"],
     XDG_DATA_DIRS: isWin
-        ? `${process.env["APPDATA"] || ""}:${process.env["ProgramData"] || ""}`
-        : "/usr/local/share:/usr/share",
+        ? [process.env["APPDATA"] || "", process.env["ProgramData"] || ""]
+        : ["/usr/local/share", "/usr/share"],
 };
 
 const buildDirs = (envName: XDGDirsName): string[] => {
-    return (process.env[envName] || DefaultDirs[envName])
-        .split(":")
-        .filter((dir) => dir);
+    return (process.env[envName]?.split(":") || DefaultDirs[envName]).filter(
+        (dir) => dir,
+    );
 };
 
 export { buildHome, buildDirs };
